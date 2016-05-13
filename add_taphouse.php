@@ -16,7 +16,6 @@ if(!$stmt1->execute()){
 	echo "Execute failed: "  . $stmt1->errno . " " . $stmt1->error;
 } else {
 	echo "Added " . $stmt1->affected_rows . " rows to taphouse.";
-	echo 'The ID is: '.$stmt1->insert_id;
 }
 
 if ($_POST['outdoor_seating'] == "yes") { 

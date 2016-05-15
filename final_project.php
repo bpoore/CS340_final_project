@@ -22,6 +22,18 @@ if($mysqli->connect_errno){
   </head>
 	<body>
 		<div class="container">
+			<nav class="navbar navbar-default">
+		        <div class="container-fluid">
+		          <div class="navbar-header">
+		            <a class="navbar-brand" href="final_project.php">Beer Finder</a>
+		          </div>
+		          <ul class="nav navbar-nav">
+		            <li class="active"><a href="final_project.php">Home</a></li>
+		            <li><a href="view_taphouses.php">View and Add Taphouses</a></li> 
+		            <li><a href="view_beers.php">View and Add Beers</a></li> 
+		            <li><a href="view_breweries.php">View and Add Breweries</a></li> 
+		        </div>
+		     </nav>
 			<div class='jumbotron'>
 				<div class='container'>
 					<h1>Beer Finder</h1>
@@ -97,7 +109,7 @@ if($mysqli->connect_errno){
 					</div>
 				</fieldset>
 			</form>	
-			<form class="form-horizontal" method='POST' action='find_beer.php'>
+			<form class="form-horizontal" method='POST' action='find_beer_by_location.php'>
 				<fieldset class="form-group">
 					<legend>Find Where a Beer is Right Now Near You:</legend>
 					<div class="form-group">
@@ -124,6 +136,57 @@ if($mysqli->connect_errno){
 									$stmt->close();
 								?>
 							</select>
+					</div>
+					<div class="form-group">
+						<label class="col-sm-2 control-label">City:</label>
+							<select class="col-sm-2 control-label" name="taphouse_city">
+								<?php
+									if(!($stmt = $mysqli->prepare("SELECT taphouse.city FROM taphouse GROUP BY taphouse.city"))){
+										echo "Prepare failed: "  . $stmt->errno . " " . $stmt->error;
+									}
+
+									if(!$stmt->execute()){
+										echo "Execute failed: "  . $mysqli->connect_errno . " " . $mysqli->connect_error;
+									}
+									
+									if(!$stmt->bind_result($city)){
+										echo "Bind failed: "  . $mysqli->connect_errno . " " . $mysqli->connect_error;
+									}
+								
+									while($stmt->fetch()){
+					 			
+					 					echo '<option value="'.$city.'"> ' . $city . '</option>\n';
+									}
+								
+									$stmt->close();
+								?>
+							</select>
+					</div>
+					<div class="form-group">
+						<label class="col-sm-2 control-label">State:</label>
+							<select class="col-sm-2 control-label" name="taphouse_state">
+								<?php
+									if(!($stmt = $mysqli->prepare("SELECT taphouse.state FROM taphouse GROUP BY taphouse.state"))){
+										echo "Prepare failed: "  . $stmt->errno . " " . $stmt->error;
+									}
+
+									if(!$stmt->execute()){
+										echo "Execute failed: "  . $mysqli->connect_errno . " " . $mysqli->connect_error;
+									}
+									
+									if(!$stmt->bind_result($state)){
+										echo "Bind failed: "  . $mysqli->connect_errno . " " . $mysqli->connect_error;
+									}
+								
+									while($stmt->fetch()){
+					 			
+					 					echo '<option value="'.$state.'"> ' . $state . '</option>\n';
+									}
+								
+									$stmt->close();
+								?>
+							</select>
+					</div>
 					<div class="form-group">
 						<div class="col-sm-offset-2 col-sm-10">
 							<input type="submit" class="btn btn-primary">
@@ -166,15 +229,6 @@ if($mysqli->connect_errno){
 					</div>
 				</fieldset>
 			</form>	
-
-
-
-			
-			<span>
-				<a href='http://web.engr.oregonstate.edu/~pooree/CS340/final_project/view_taphouses.php' class='btn btn-info' role='button'>View & Add Taphouses</a>
-				<a href='http://web.engr.oregonstate.edu/~pooree/CS340/final_project/view_beers.php' class='btn btn-info' role='button'>View  &  Add Beers</a>
-				<a href='http://web.engr.oregonstate.edu/~pooree/CS340/final_project/view_breweries.php' class='btn btn-info' role='button'>View & Add Breweries</a>
-			</span>
 		</div>
 	</body>
 </html>

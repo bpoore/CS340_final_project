@@ -22,6 +22,18 @@ if($mysqli->connect_errno){
   </head>
   <body>
 		<div class="container">		
+      <nav class="navbar navbar-default">
+        <div class="container-fluid">
+          <div class="navbar-header">
+            <a class="navbar-brand" href="final_project.php">Beer Finder</a>
+          </div>
+          <ul class="nav navbar-nav">
+            <li class="active"><a href="final_project.php">Home</a></li>
+            <li><a href="view_taphouses.php">View and Add Taphouses</a></li> 
+            <li><a href="view_beers.php">View and Add Beers</a></li> 
+            <li><a href="view_breweries.php">View and Add Breweries</a></li> 
+        </div>
+     </nav>
 		   <h1>Now on tap at 
           <?php
           if(!($stmt = $mysqli->prepare("SELECT name FROM taphouse WHERE taphouse.id=". $_POST['taphouse_id'].""))){
@@ -137,8 +149,5 @@ if($mysqli->connect_errno){
           </div>
           </fieldset>
       </form>
-
-      <a href="http://web.engr.oregonstate.edu/~pooree/CS340/final_project/final_project.php" class="btn btn-primary btn-block" role="button">Back to Beer Finder</a>
-    </div>
   </body>
 </html> 

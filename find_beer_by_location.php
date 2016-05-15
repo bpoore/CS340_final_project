@@ -4,8 +4,8 @@ ini_set('display_errors', 'On');
 //Connects to the database
 $mysqli = new mysqli("oniddb.cws.oregonstate.edu","pooree-db","jweJE9PtV1AmdsA7","pooree-db");
 if($mysqli->connect_errno){
-  echo "Connection error " . $mysqli->connect_errno . " " . $mysqli->connect_error;
-  }
+	echo "Connection error " . $mysqli->connect_errno . " " . $mysqli->connect_error;
+	}
 ?>
 
 <!DOCTYPE html>
@@ -21,7 +21,7 @@ if($mysqli->connect_errno){
     <script src='app.js'></script>
   </head>
   <body>
-    <div class="container">
+    <div class='container'>
       <nav class="navbar navbar-default">
         <div class="container-fluid">
           <div class="navbar-header">
@@ -34,12 +34,11 @@ if($mysqli->connect_errno){
             <li><a href="view_breweries.php">View and Add Breweries</a></li> 
         </div>
      </nav>
-      <h1>Taphouses with Outdoor Seating Serving Beer by 
-        <?php
-          if(!($stmt = $mysqli->prepare("SELECT brewery.name FROM brewery WHERE brewery.id=". $_POST['brewery_id'].""))){
+      <h1><?php
+          if(!($stmt = $mysqli->prepare("SELECT brewery.name, beer.name FROM beer INNER JOIN brewery ON beer.brewery=brewery.id WHERE beer.id=". $_POST['beer_id'].""))){
             echo "Prepare failed: "  . $stmt->errno . " " . $stmt->error;
           }
-          if(!$stmt->bind_result($brewery_name)){
+          if(!$stmt->bind_result($brewery_name, $beer_name)){
             echo "Bind failed: "  . $mysqli->connect_errno . " " . $mysqli->connect_error;
           }
 
@@ -48,40 +47,37 @@ if($mysqli->connect_errno){
           }
                           
           while($stmt->fetch()){ 
-              echo $brewery_name;
+              echo $brewery_name . " - " . $beer_name;
           } 
             
             $stmt->close();
-        ?> 
+        ?> is now at:
       </h1>
-        <table class="table table-striped">
+    <div class="container">
+      <table class="table table-striped">
           <tr>
             <th>Name</th>
             <th>Street Address</th>
-            <th>City</th>
-            <th>State</th>
-            <th>Zipcode</th>
-            <th>Open</th>
-            <th>Close</th>
           </tr>
           <tbody>
             <?php
-              if(!($stmt = $mysqli->prepare("SELECT DISTINCT taphouse.name, taphouse.street_address, taphouse.city, taphouse.state, taphouse.zip, taphouse.open, taphouse.close, brewery.id FROM brewery INNER JOIN beer ON brewery.id=beer.brewery INNER JOIN beer_on_tap ON beer_on_tap.beer_id=beer.id INNER JOIN taphouse ON beer_on_tap.tap_id=taphouse.id INNER JOIN outdoor_seating ON taphouse.id=outdoor_seating.tap_id WHERE brewery.id=".$_POST['brewery_id'].""))){
+              if(!($stmt = $mysqli->prepare("SELECT taphouse.name, taphouse.street_address FROM taphouse INNER JOIN beer_on_tap ON taphouse.id=beer_on_tap.tap_id INNER JOIN beer ON beer.id=beer_on_tap.beer_id WHERE beer.id=? AND taphouse.city=? AND taphouse.state=?"))){
                 echo "Prepare failed: "  . $stmt->errno . " " . $stmt->error;
+              }
+              if(!($stmt->bind_param("iss",$_POST['beer_id'],$_POST['taphouse_city'],$_POST['taphouse_state']))){
+                echo "Bind failed: "  . $stmt->errno . " " . $stmt->error;
               }
 
               if(!$stmt->execute()){
                 echo "Execute failed: "  . $mysqli->connect_errno . " " . $mysqli->connect_error;
               }
-              
-              if(!$stmt->bind_result($name, $street_address, $city, $state, $zip, $open, $close, $brewery_id)){
+              if(!$stmt->bind_result($tap_name, $address)){
                 echo "Bind failed: "  . $mysqli->connect_errno . " " . $mysqli->connect_error;
               }
-            
-              while($stmt->fetch()){
-            
-                echo "<tr>\n<td>\n" . $name . "\n</td>\n<td>\n" . $street_address . "\n</td>\n<td>\n" . $city . "\n</td>\n<td>" . $state . "\n</td>\n<td>" . $zip . "\n</td>\n<td>" . $open . "\n</td>\n<td>" . $close . "\n</td>\n</tr>";
-              }
+
+              while($stmt->fetch()){ 
+                echo "<tr>\n<td>\n" . $tap_name . "\n</td>\n<td>" . $address . "\n</td>\n</tr>";
+              } 
             
               $stmt->close();
             ?>
@@ -89,4 +85,4 @@ if($mysqli->connect_errno){
         </table>
     </div>
   </body>
-</html>
+</html>  

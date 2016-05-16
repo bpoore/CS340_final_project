@@ -33,7 +33,7 @@ CREATE TABLE `brewery`
 CREATE TABLE `outdoor_seating`
 (
 	`id` int NOT NULL AUTO_INCREMENT,
-	`tap_id` int,
+	`tap_id` int UNIQUE,
 	PRIMARY KEY(`id`),
 	FOREIGN KEY(`tap_id`) REFERENCES `taphouse` (`id`)
 );
@@ -69,15 +69,3 @@ CREATE TABLE `beer_on_tap`
 	FOREIGN KEY(`beer_id`) REFERENCES `beer` (`id`)
 );
 
-INSERT INTO taphouse (name, city, state) VALUES ('Apex', 'Portland', 'Oregon'), ('Uptown', 'Portland', 'Oregon'), ('Crux', 'Bend', 'Oregon'), ('YNot', 'Beaverton', 'Oregon'), ('Tap House', 'Seattle', 'Washington');
-
-INSERT INTO outdoor_seating (tap_id) VALUES ((SELECT taphouse.id FROM taphouse WHERE taphouse.name='Apex'));
-INSERT INTO brewery (name, city, state) VALUES ('Boneyard', 'Bend', 'Oregon'), ('Barley Brown', 'Burns', 'Oregon');
-INSERT INTO beer (name, type, brewery) VALUES ('Pallet Jack', 'India Pale Ale', (SELECT brewery.id FROM brewery WHERE name='Barley Brown')), ('RPM', 'India Pale Ale', (SELECT brewery.id FROM brewery WHERE name='Boneyard'));
-INSERT INTO beer_on_tap (tap_id, beer_id, pintPrice, growlerPrice) VALUES ((SELECT taphouse.id FROM taphouse WHERE name='Apex'), (SELECT beer.id FROM beer WHERE name='RPM'), 4, 13);
-
-
-mysql> SELECT taphouse.name FROM taphouse 
-    -> INNER JOIN beer_on_tap on taphouse.id = beer_on_tap.tap_id
-    -> INNER JOIN beer on beer.id=beer_on_tap.beer_id
-    -> WHERE beer.name='Pallet Jack';

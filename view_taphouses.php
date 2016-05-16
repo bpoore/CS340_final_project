@@ -41,13 +41,13 @@ if($mysqli->connect_errno){
             <th>Street Address</th>
             <th>City</th>
             <th>State</th>
-            <th>Zipcode</th>
             <th>Open</th>
             <th>Close</th>
+            <th>Update</th>
           </tr>
           <tbody>
             <?php
-              if(!($stmt = $mysqli->prepare("SELECT taphouse.name, taphouse.street_address, taphouse.city, taphouse.state, taphouse.zip, taphouse.open, taphouse.close FROM taphouse"))){
+              if(!($stmt = $mysqli->prepare("SELECT taphouse.name, taphouse.street_address, taphouse.city, taphouse.state, taphouse.open, taphouse.close, taphouse.id FROM taphouse"))){
                 echo "Prepare failed: "  . $stmt->errno . " " . $stmt->error;
               }
 
@@ -55,7 +55,7 @@ if($mysqli->connect_errno){
                 echo "Execute failed: "  . $mysqli->connect_errno . " " . $mysqli->connect_error;
               }
               
-              if(!$stmt->bind_result($name, $street_address, $city, $state, $zip, $open, $close)){
+              if(!$stmt->bind_result($name, $street_address, $city, $state, $open, $close, $id)){
                 echo "Bind failed: "  . $mysqli->connect_errno . " " . $mysqli->connect_error;
               }
             
@@ -83,14 +83,20 @@ if($mysqli->connect_errno){
                   $state;
                   echo "N/A\n</td>\n<td>\n";
                 }
-                if($zip >0) {
-                  echo $zip . "\n</td>\n<td>";
-                }
-                else {
-                  $zip;
-                  echo "N/A\n</td>\n<td>";
-                }
-                echo $open . "\n</td>\n<td>" . $close . "\n</td>\n</tr>";
+                // Found how to deal with time on stack overflow: http://stackoverflow.com/questions/13719116/dealing-with-time-in-php-mysql
+                $open_time=strtotime($open); 
+                $data_print=date("g:i A", $open_time);
+                echo $data_print . "\n</td>\n<td>";
+
+                $close_time=strtotime($close);
+                $data_print=date("g:i A", $close_time);
+                echo $data_print . "\n</td>\n</td>";
+                echo "\n</td>\n<td>\n 
+                <form method='post' action='taphouse_data.php'>
+                <input type='hidden' name='taphouse_id' value='". $id . "'>  
+                <input type='submit' value='update' class='btn btn-info'>
+                </form>
+                \n</td>\n</tr>"; 
               }
             
               $stmt->close();
@@ -133,6 +139,50 @@ if($mysqli->connect_errno){
             <div class="col-sm-10">
               <input type='number' name='zip'>
             </div>
+          </div>
+          <div class="form-group">
+            <label class="col-sm-2 control-label">Open:</label>
+              <select class="col-sm-2 control-label" name="open">
+                <option value="1">1:00</label>
+                <option value="2">2:00</label>
+                <option value="3">3:00</label>
+                <option value="4">4:00</label>
+                <option value="5">5:00</label>
+                <option value="6">6:00</label>
+                <option value="7">7:00</label>
+                <option value="8">8:00</label>
+                <option value="9">9:00</label>
+                <option value="10">10:00</label>
+                <option value="11">11:00</label>
+                <option value="12">12:00</label>
+              </select>
+              <label class="col-sm-2 control-label">
+                <div class="col-sm-10">
+                  <label><input type="radio" name="open_am_pm" value="AM" checked>AM</label>
+                  <label><input type="radio" name="open_am_pm" value="PM">PM</label>
+                </div>
+          </div>
+          <div class="form-group">
+            <label class="col-sm-2 control-label">Close:</label>
+              <select class="col-sm-2 control-label" name="close">
+                <option value="1">1:00</label>
+                <option value="2">2:00</label>
+                <option value="3">3:00</label>
+                <option value="4">4:00</label>
+                <option value="5">5:00</label>
+                <option value="6">6:00</label>
+                <option value="7">7:00</label>
+                <option value="8">8:00</label>
+                <option value="9">9:00</label>
+                <option value="10">10:00</label>
+                <option value="11">11:00</label>
+                <option value="12">12:00</label>
+              </select>
+              <label class="col-sm-2 control-label">
+                <div class="col-sm-10">
+                  <label><input type="radio" name="close_am_pm" value="AM" checked>AM</label>
+                  <label><input type="radio" name="close_am_pm" value="PM">PM</label>
+                </div>
           </div>
           <div class="form-group row">
             <label class="col-sm-2 control-label">Outdoor Seating:</label>

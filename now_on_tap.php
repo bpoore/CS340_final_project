@@ -78,8 +78,22 @@ if($mysqli->connect_errno){
           
             while($stmt->fetch()){
             
-                echo "<tr>\n<td>\n" . $brewery . "\n</td>\n<td>\n" . $beer . "\n</td>\n<td>" . $pint . "\n</td>\n<td>" . $growler . 
-                "\n</td>\n<td>\n 
+                echo "<tr>\n<td>\n" . $brewery . "\n</td>\n<td>\n" . $beer . "\n</td>\n<td>";
+                if($pint >0) {
+                  echo $pint . "\n</td>\n<td>";
+                } 
+                else {
+                  $pint;
+                  echo "N/A\n</td>\n<td>";
+                }
+                if($growler>0) {
+                  echo $growler;
+                }
+                else {
+                  $growler;
+                  echo "N/A";
+                }
+                echo "\n</td>\n<td>\n 
                 <form method='post' action='delete_beer_at_location.php'>
                 <input type='hidden' name='beer_on_tap_id' value='". $id . "'>  
                 <input type='submit' value='Remove' class='btn btn-danger'>

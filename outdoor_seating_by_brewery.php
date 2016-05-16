@@ -80,7 +80,37 @@ if($mysqli->connect_errno){
             
               while($stmt->fetch()){
             
-                echo "<tr>\n<td>\n" . $name . "\n</td>\n<td>\n" . $street_address . "\n</td>\n<td>\n" . $city . "\n</td>\n<td>" . $state . "\n</td>\n<td>" . $zip . "\n</td>\n<td>" . $open . "\n</td>\n<td>" . $close . "\n</td>\n</tr>";
+                echo "<tr>\n<td>\n" . $name . "\n</td>\n<td>\n";
+                if(strlen($street_address)>1) {
+                  echo $street_address . "\n</td>\n<td>\n";
+                }
+                else {
+                  $street_address;
+                  echo "N/A\n</td>\n<td>\n";
+                }
+                if(strlen($city)>1) {
+                  echo $city . "\n</td>\n<td>"; 
+                } 
+                else {
+                  $city;
+                  echo "N/A\n</td>\n<td>\n";
+                } 
+                if(strlen($state)>1) {
+                  echo $state . "\n</td>\n<td>";
+                }
+                else {
+                  $state;
+                  echo "N/A\n</td>\n<td>\n";
+                }
+                if($zip >0) {
+                  echo $zip . "\n</td>\n<td>";
+                }
+                else {
+                  $zip;
+                  echo "N/A\n</td>\n<td>";
+                }
+                echo $open . "\n</td>\n<td>" . $close . "\n</td>\n</tr>";
+              
               }
             
               $stmt->close();

@@ -57,7 +57,22 @@ if($mysqli->connect_errno){
           
             while($stmt->fetch()){
           
-              echo "<tr>\n<td>\n" . $name . "\n</td>\n<td>\n" . $city . "\n</td>\n<td>" . $state . "\n</td>\n</tr>";
+              echo "<tr>\n<td>\n" . $name . "\n</td>\n<td>\n";
+              if(strlen($city) > 1) {
+                echo $city . "\n</td>\n<td>";
+              }
+              else {
+                $city;
+                echo "N/A\n</td>\n<td>";
+              }
+              if(strlen($state) > 1) {
+                echo $state . "\n</td>\n</tr>";
+              }
+              else {
+                $state;
+                echo "N/A\n</td>\n</tr>";
+              }
+        
             }
           
             $stmt->close();

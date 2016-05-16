@@ -55,11 +55,6 @@ if($mysqli->connect_errno){
       </h1>
     <div class="container">
       <table class="table table-striped">
-          <tr>
-            <th>Name</th>
-            <th>Street Address</th>
-          </tr>
-          <tbody>
             <?php
               if(!($stmt = $mysqli->prepare("SELECT taphouse.name, taphouse.street_address FROM taphouse INNER JOIN beer_on_tap ON taphouse.id=beer_on_tap.tap_id INNER JOIN beer ON beer.id=beer_on_tap.beer_id WHERE beer.id=? AND taphouse.city=? AND taphouse.state=?"))){
                 echo "Prepare failed: "  . $stmt->errno . " " . $stmt->error;
@@ -71,13 +66,27 @@ if($mysqli->connect_errno){
               if(!$stmt->execute()){
                 echo "Execute failed: "  . $mysqli->connect_errno . " " . $mysqli->connect_error;
               }
+
+              $stmt->store_result(); //Necessary for num_rows storage
+
               if(!$stmt->bind_result($tap_name, $address)){
                 echo "Bind failed: "  . $mysqli->connect_errno . " " . $mysqli->connect_error;
               }
-
-              while($stmt->fetch()){ 
-                echo "<tr>\n<td>\n" . $tap_name . "\n</td>\n<td>" . $address . "\n</td>\n</tr>";
-              } 
+              if($stmt->num_rows>0)
+              {
+                echo   "<tr>
+                         <th>Name</th>
+                          <th>Street Address</th>
+                        </tr>
+                        <tbody>";
+                while($stmt->fetch()){
+                    echo "<tr>\n<td>\n" . $tap_name . "\n</td>\n<td>" . $address . "\n</td>\n</tr>";
+                }
+              }
+              else
+              {
+                echo "No results";
+              }
             
               $stmt->close();
             ?>

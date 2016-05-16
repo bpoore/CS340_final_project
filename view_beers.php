@@ -58,7 +58,28 @@ if($mysqli->connect_errno){
 					
 						while($stmt->fetch()){
 						
-								echo "<tr>\n<td>\n" . $name . "\n</td>\n<td>\n" . $type . "\n</td>\n<td>" . $abv . "\n</td>\n<td>" . $brewery . "\n</td>\n</tr>";
+								echo "<tr>\n<td>\n" . $name . "\n</td>\n<td>\n";
+								if(strlen($type) >1) {
+									echo  $type . "\n</td>\n<td>";
+								}
+								else {
+									$type;
+									echo "N/A\n</td>\n<td>";
+								}
+								if($abv >0) {
+									echo $abv . "\n</td>\n<td>" ;
+								}
+								else {
+									$abv;
+									echo "N/A\n</td>\n<td>";
+								}
+								if(strlen($brewery )>1) {
+									echo $brewery . "\n</td>\n</tr>";
+								}
+								else {
+									$brewery;
+									echo "N/A\n</td>\n</tr>";
+								}
 						}
 					
 						$stmt->close();

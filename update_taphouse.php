@@ -13,7 +13,7 @@ $close = $_POST['close'] . ':00' . $_POST['close_am_pm'];
 $ctime=strtotime($close);
 $close_time=date("H:i:s", $ctime);
 
-
+//Update taphouse general info
 if($mysqli->connect_errno){
   echo "Connection error " . $mysqli->connect_errno . " " . $mysqli->connect_error;
   }
@@ -31,9 +31,20 @@ if(!$stmt1->execute()){
   echo "Updated " . $stmt1->affected_rows . " rows in taphouse.";
 } 
 
-if ($_POST['outdoor_seating'] == "yes") { 
+/* Update outdoor seating table info. 
+Found info for retrieving a single mysql value from stack overflow. Needed this to avoid error of adding a duplicate tap_id to outdoor seating
+http://stackoverflow.com/questions/11456707/single-value-mysqli */
+$outdoor_was_yes = getval($mysqli, "SELECT tap_id FROM outdoor_seating WHERE tap_id=".$_POST['taphouse_id']."");
+
+function getval($mysqli, $sql) {
+    $result = $mysqli->query($sql);
+    $value = $result->fetch_array(MYSQLI_NUM);
+    return is_array($value) ? $value[0] : "";
+}
+
+if (($_POST['outdoor_seating'] == "yes") && ($_POST['taphouse_id'] != $outdoor_was_yes)) { 
   if(!($stmt2 = $mysqli->prepare("INSERT INTO outdoor_seating(tap_id) VALUES (". $_POST['taphouse_id'] .")"))){
-  echo "Prepare failed: "  . $stmt2->errno . " " . $stmt2->error;
+    echo "Prepare failed: "  . $stmt2->errno . " " . $stmt2->error;
   }
   if(!$stmt2->execute()){
     echo "Execute failed: "  . $stmt2->errno . " " . $stmt2->error;

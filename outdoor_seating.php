@@ -34,20 +34,16 @@ if($mysqli->connect_errno){
             <li><a href="view_breweries.php">View and Add Breweries</a></li> 
         </div>
      </nav>
-      <h1>Taphouses</h1>
+      <h1>Taphouses with Outdoor Seating</h1>
         <table class="table table-striped">
           <tr>
             <th>Name</th>
-            <th>Street Address</th>
             <th>City</th>
             <th>State</th>
-            <th>Zipcode</th>
-            <th>Open</th>
-            <th>Close</th>
           </tr>
           <tbody>
             <?php
-              if(!($stmt = $mysqli->prepare("SELECT taphouse.name, taphouse.street_address, taphouse.city, taphouse.state, taphouse.zip, taphouse.open, taphouse.close FROM taphouse INNER JOIN outdoor_seating on taphouse.id=outdoor_seating.tap_id"))){
+              if(!($stmt = $mysqli->prepare("SELECT taphouse.name, taphouse.city, taphouse.state FROM taphouse INNER JOIN outdoor_seating on taphouse.id=outdoor_seating.tap_id"))){
                 echo "Prepare failed: "  . $stmt->errno . " " . $stmt->error;
               }
 
@@ -55,19 +51,12 @@ if($mysqli->connect_errno){
                 echo "Execute failed: "  . $mysqli->connect_errno . " " . $mysqli->connect_error;
               }
               
-              if(!$stmt->bind_result($name, $street_address, $city, $state, $zip, $open, $close)){
+              if(!$stmt->bind_result($name, $city, $state)){
                 echo "Bind failed: "  . $mysqli->connect_errno . " " . $mysqli->connect_error;
               }
             
               while($stmt->fetch()){
                 echo "<tr>\n<td>\n" . $name . "\n</td>\n<td>\n";
-                if(strlen($street_address)>1) {
-                  echo $street_address . "\n</td>\n<td>\n";
-                }
-                else {
-                  $street_address;
-                  echo "N/A\n</td>\n<td>\n";
-                }
                 if(strlen($city)>1) {
                   echo $city . "\n</td>\n<td>"; 
                 } 
@@ -76,22 +65,13 @@ if($mysqli->connect_errno){
                   echo "N/A\n</td>\n<td>\n";
                 } 
                 if(strlen($state)>1) {
-                  echo $state . "\n</td>\n<td>";
+                  echo $state . "\n</td>\n</tr>";
                 }
                 else {
                   $state;
-                  echo "N/A\n</td>\n<td>\n";
+                  echo "N/A\n</td>\n</tr>";
                 }
-                if($zip >0) {
-                  echo $zip . "\n</td>\n<td>";
-                }
-                else {
-                  $zip;
-                  echo "N/A\n</td>\n<td>";
-                }
-                echo $open . "\n</td>\n<td>" . $close . "\n</td>\n</tr>";
-              }    
-            
+              }
               $stmt->close();
             ?>
           </tbody>

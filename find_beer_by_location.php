@@ -85,7 +85,7 @@ if($mysqli->connect_errno){
               }
               else
               {
-                echo "No results";
+                echo "<h3 style='color:red'>No results</h3>";
               }
             
               $stmt->close();

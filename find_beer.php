@@ -45,7 +45,7 @@ if($mysqli->connect_errno){
         if(!$stmt->execute()){
               echo "Execute failed: "  . $mysqli->connect_errno . " " . $mysqli->connect_error;
           }
-                          
+
           while($stmt->fetch()){ 
               echo $brewery_name . " - " . $beer_name;
           } 
@@ -55,12 +55,6 @@ if($mysqli->connect_errno){
       </h1>
   	<div class="container">
       <table class="table table-striped">
-          <tr>
-            <th>Name</th>
-            <th>City</th>
-            <th>State</th>
-          </tr>
-          <tbody>
             <?php
               if(!($stmt = $mysqli->prepare("SELECT taphouse.name, taphouse.city, taphouse.state FROM taphouse INNER JOIN beer_on_tap ON taphouse.id=beer_on_tap.tap_id INNER JOIN beer ON beer.id=beer_on_tap.beer_id WHERE beer.id=". $_POST['beer_id'] .""))){
                 echo "Prepare failed: "  . $stmt->errno . " " . $stmt->error;
@@ -72,10 +66,24 @@ if($mysqli->connect_errno){
               if(!$stmt->execute()){
                 echo "Execute failed: "  . $mysqli->connect_errno . " " . $mysqli->connect_error;
               }
-                          
-              while($stmt->fetch()){ 
-                echo "<tr>\n<td>\n" . $name . "\n</td>\n<td>\n" . $city . "\n</td>\n<td>\n" . $state ."\n</td>\n</tr>";
-              } 
+
+              $stmt->store_result(); //Necessary for num_rows storage
+        
+              if($stmt->num_rows>0) {     
+                echo "<tr>
+                        <th>Name</th>
+                        <th>City</th>
+                        <th>State</th>
+                      </tr>
+                    <tbody>";            
+                while($stmt->fetch()){ 
+                  echo "<tr>\n<td>\n" . $name . "\n</td>\n<td>\n" . $city . "\n</td>\n<td>\n" . $state ."\n</td>\n</tr>";
+                }
+              }
+              else {
+                echo "<h3 style='color:red'>No results</h3>";
+              }
+
             
               $stmt->close();
             ?>

@@ -55,62 +55,57 @@ if($mysqli->connect_errno){
         ?> 
       </h1>
         <table class="table table-striped">
-          <tr>
-            <th>Name</th>
-            <th>Street Address</th>
-            <th>City</th>
-            <th>State</th>
-            <th>Zipcode</th>
-            <th>Open</th>
-            <th>Close</th>
-          </tr>
           <tbody>
             <?php
-              if(!($stmt = $mysqli->prepare("SELECT DISTINCT taphouse.name, taphouse.street_address, taphouse.city, taphouse.state, taphouse.zip, taphouse.open, taphouse.close, brewery.id FROM brewery INNER JOIN beer ON brewery.id=beer.brewery INNER JOIN beer_on_tap ON beer_on_tap.beer_id=beer.id INNER JOIN taphouse ON beer_on_tap.tap_id=taphouse.id INNER JOIN outdoor_seating ON taphouse.id=outdoor_seating.tap_id WHERE brewery.id=".$_POST['brewery_id'].""))){
+              if(!($stmt = $mysqli->prepare("SELECT DISTINCT taphouse.name, taphouse.street_address, taphouse.city, taphouse.state, brewery.id FROM brewery INNER JOIN beer ON brewery.id=beer.brewery INNER JOIN beer_on_tap ON beer_on_tap.beer_id=beer.id INNER JOIN taphouse ON beer_on_tap.tap_id=taphouse.id INNER JOIN outdoor_seating ON taphouse.id=outdoor_seating.tap_id WHERE brewery.id=".$_POST['brewery_id'].""))){
                 echo "Prepare failed: "  . $stmt->errno . " " . $stmt->error;
               }
 
               if(!$stmt->execute()){
                 echo "Execute failed: "  . $mysqli->connect_errno . " " . $mysqli->connect_error;
               }
+
+              $stmt->store_result(); //Necessary for num_rows storage
               
-              if(!$stmt->bind_result($name, $street_address, $city, $state, $zip, $open, $close, $brewery_id)){
+              if(!$stmt->bind_result($name, $street_address, $city, $state, $brewery_id)){
                 echo "Bind failed: "  . $mysqli->connect_errno . " " . $mysqli->connect_error;
               }
             
-              while($stmt->fetch()){
-            
-                echo "<tr>\n<td>\n" . $name . "\n</td>\n<td>\n";
-                if(strlen($street_address)>1) {
-                  echo $street_address . "\n</td>\n<td>\n";
-                }
-                else {
-                  $street_address;
-                  echo "N/A\n</td>\n<td>\n";
-                }
-                if(strlen($city)>1) {
-                  echo $city . "\n</td>\n<td>"; 
-                } 
-                else {
-                  $city;
-                  echo "N/A\n</td>\n<td>\n";
-                } 
-                if(strlen($state)>1) {
-                  echo $state . "\n</td>\n<td>";
-                }
-                else {
-                  $state;
-                  echo "N/A\n</td>\n<td>\n";
-                }
-                if($zip >0) {
-                  echo $zip . "\n</td>\n<td>";
-                }
-                else {
-                  $zip;
-                  echo "N/A\n</td>\n<td>";
-                }
-                echo $open . "\n</td>\n<td>" . $close . "\n</td>\n</tr>";
+              if($stmt->num_rows>0) {
+                echo "<tr>
+                        <th>Name</th>
+                        <th>Street Address</th>
+                        <th>City</th>
+                        <th>State</th>
+                      </tr>";
+                while($stmt->fetch()){
               
+                  echo "<tr>\n<td>\n" . $name . "\n</td>\n<td>\n";
+                  if(strlen($street_address)>1) {
+                    echo $street_address . "\n</td>\n<td>\n";
+                  }
+                  else {
+                    $street_address;
+                    echo "N/A\n</td>\n<td>\n";
+                  }
+                  if(strlen($city)>1) {
+                    echo $city . "\n</td>\n<td>"; 
+                  } 
+                  else {
+                    $city;
+                    echo "N/A\n</td>\n<td>\n";
+                  } 
+                  if(strlen($state)>1) {
+                    echo $state . "\n</td>\n</tr>";
+                  }
+                  else {
+                    $state;
+                    echo "N/A\n</td>\n</tr>";
+                  }
+                }
+              }
+              else {
+                echo "<h3 style='color:red'>No results</h3>";
               }
             
               $stmt->close();

@@ -35,7 +35,23 @@ if($mysqli->connect_errno){
         </div>
      </nav>
      <?php 
-		if(!($stmt = $mysqli->prepare("SELECT taphouse.name, taphouse.street_address, taphouse.city, taphouse.state, taphouse.zip, taphouse.id FROM taphouse WHERE taphouse.id=".$_POST['taphouse_id'].""))){
+    //Found info for retrieving a single mysql value from stack overflow. Needed this to avoid error of adding a duplicate tap_id to outdoor seating
+    //http://stackoverflow.com/questions/11456707/single-value-mysqli 
+    $outdoor_query = getval($mysqli, "SELECT tap_id FROM outdoor_seating WHERE tap_id=".$_POST['taphouse_id']."");
+    if($outdoor_query >0) {
+      $outdoor = 'yes';
+    }
+    else {
+      $outdoor = 'no';
+    }
+
+    function getval($mysqli, $sql) {
+        $result = $mysqli->query($sql);
+        $value = $result->fetch_array(MYSQLI_NUM);
+        return is_array($value) ? $value[0] : "";
+    }
+
+		if(!($stmt = $mysqli->prepare("SELECT taphouse.name, taphouse.street_address, taphouse.city, taphouse.state, taphouse.zip, taphouse.open, taphouse.close, taphouse.id FROM taphouse WHERE taphouse.id=".$_POST['taphouse_id'].""))){
 			echo "Prepare failed: "  . $stmt1->errno . " " . $stmt1->error;
 		}
 
@@ -43,10 +59,19 @@ if($mysqli->connect_errno){
 			echo "Execute failed: "  . $stmt1->errno . " " . $stmt1->error;
 		} 
 
-        if(!$stmt->bind_result($brewery, $address, $city, $state, $zip, $id)){
-          echo "Bind failed: "  . $mysqli->connect_errno . " " . $mysqli->connect_error;
-        } 
-		 while($stmt->fetch()){
+    if(!$stmt->bind_result($brewery, $address, $city, $state, $zip, $open_time, $close_time, $id)){
+       echo "Bind failed: "  . $mysqli->connect_errno . " " . $mysqli->connect_error;
+    } 
+  	while($stmt->fetch()){
+    $open=strtotime($open_time);
+    $open_print=date("g", $open);
+    $open_am=date("H", $open);
+
+    $close=strtotime($close_time);
+    $close_print=date("g", $close);
+    $close_am=date("H", $close);
+
+
 		echo "
 		 <form class='form-horizontal' method='POST' action='update_taphouse.php'>
          <fieldset class='form-group'>
@@ -94,52 +119,52 @@ if($mysqli->connect_errno){
           <div class='form-group'>
             <label class='col-sm-2 control-label'>Open:</label>
               <select class='col-sm-2 control-label' name='open'>
-                <option value='1'>1:00</label>
-                <option value='2'>2:00</label>
-                <option value='3'>3:00</label>
-                <option value='4'>4:00</label>
-                <option value='5'>5:00</label>
-                <option value='6'>6:00</label>
-                <option value='7'>7:00</label>
-                <option value='8'>8:00</label>
-                <option value='9'>9:00</label>
-                <option value='10'>10:00</label>
-                <option value='11'>11:00</label>
-                <option value='12'>12:00</label>
+                <option value='1' "; if($open_print == '1') { echo"selected";} echo">1:00</label>
+                <option value='2' "; if($open_print == '2') { echo"selected";} echo">2:00</label>
+                <option value='3' "; if($open_print == '3') { echo"selected";} echo">3:00</label>
+                <option value='4' "; if($open_print == '4') { echo"selected";} echo">4:00</label>
+                <option value='5' "; if($open_print == '5') { echo"selected";} echo">5:00</label>
+                <option value='6' "; if($open_print == '6') { echo"selected";} echo">6:00</label>
+                <option value='7' "; if($open_print == '7') { echo"selected";} echo">7:00</label>
+                <option value='8' "; if($open_print == '8') { echo"selected";} echo">8:00</label>
+                <option value='9' "; if($open_print == '9') { echo"selected";} echo">9:00</label>
+                <option value='10' "; if($open_print == '10') { echo"selected";} echo">10:00</label>
+                <option value='11' "; if($open_print == '11') { echo"selected";} echo">11:00</label>
+                <option value='12' "; if($open_print == '12') { echo"selected";} echo">12:00</label>
               </select>
               <label class='col-sm-2 control-label'>
                 <div class='col-sm-10'>
-                  <label><input type='radio' name='open_am_pm' value='AM' checked>AM</label>
-                  <label><input type='radio' name='open_am_pm' value='PM'>PM</label>
+                  <label><input type='radio' name='open_am_pm' value='AM' "; if($open_am < '12') { echo "checked";} echo">AM</label>
+                  <label><input type='radio' name='open_am_pm' value='PM' "; if($open_am >= '12') {echo "checked";} echo">PM</label>
                 </div>
           </div>
           <div class='form-group'>
             <label class='col-sm-2 control-label'>Close:</label>
               <select class='col-sm-2 control-label' name='close'>
-                <option value='1'>1:00</label>
-                <option value='2'>2:00</label>
-                <option value='3'>3:00</label>
-                <option value='4'>4:00</label>
-                <option value='5'>5:00</label>
-                <option value='6'>6:00</label>
-                <option value='7'>7:00</label>
-                <option value='8'>8:00</label>
-                <option value='9'>9:00</label>
-                <option value='10'>10:00</label>
-                <option value='11'>11:00</label>
-                <option value='12'>12:00</label>
+                <option value='1' "; if($close_print == '1') { echo"selected";} echo">1:00</label>
+                <option value='2' "; if($close_print == '2') { echo"selected";} echo">2:00</label>
+                <option value='3' "; if($close_print == '3') { echo"selected";} echo">3:00</label>
+                <option value='4' "; if($close_print == '4') { echo"selected";} echo">4:00</label>
+                <option value='5' "; if($close_print == '5') { echo"selected";} echo">5:00</label>
+                <option value='6' "; if($close_print == '6') { echo"selected";} echo">6:00</label>
+                <option value='7' "; if($close_print == '7') { echo"selected";} echo">7:00</label>
+                <option value='8' "; if($close_print == '8') { echo"selected";} echo">8:00</label>
+                <option value='9' "; if($close_print == '9') { echo"selected";} echo">9:00</label>
+                <option value='10' "; if($close_print == '10') { echo"selected";} echo">10:00</label>
+                <option value='11' "; if($close_print == '11') { echo"selected";} echo">11:00</label>
+                <option value='12' "; if($close_print == '12') { echo"selected";} echo">12:00</label>
               </select>
               <label class='col-sm-2 control-label'>
                 <div class='col-sm-10'>
-                  <label><input type='radio' name='close_am_pm' value='AM' checked>AM</label>
-                  <label><input type='radio' name='close_am_pm' value='PM'>PM</label>
+                  <label><input type='radio' name='close_am_pm' value='AM' "; if($close_am < '12') { echo "checked";} echo">AM</label> 
+                  <label><input type='radio' name='close_am_pm' value='PM' "; if($close_am >= '12') { echo "checked";} echo">PM</label>
                 </div>
           </div>
           <div class='form-group row'>
             <label class='col-sm-2 control-label'>Outdoor Seating:</label>
               <div class='col-sm-10'>
-                  <label><input type='radio' name='outdoor_seating' value='no' checked>No</label>
-                  <label><input type='radio' name='outdoor_seating' value='yes'>Yes</label>
+                  <label><input type='radio' name='outdoor_seating' value='no' "; if($outdoor=='no') {echo "checked";} echo">No</label>
+                  <label><input type='radio' name='outdoor_seating' value='yes' "; if($outdoor=='yes') {echo "checked";} echo">Yes</label>
               </div>
           </div>
           <div class='form-group'>

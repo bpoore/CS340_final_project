@@ -41,6 +41,7 @@ CREATE TABLE `outdoor_seating`
 CREATE TABLE `food`
 (
 	`id` int NOT NULL AUTO_INCREMENT,
+	`food_type` varchar(255),
 	`tap_id` int,
 	PRIMARY KEY(`id`),
 	FOREIGN KEY(`tap_id`) REFERENCES `taphouse` (`id`)

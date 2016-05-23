@@ -71,5 +71,20 @@ if ($_POST['outdoor_seating'] == "yes") {
 	} 
 } 
 
+if ($_POST['serves_food'] == "yes") { 
+	if(!($stmt3 = $mysqli->prepare("INSERT INTO food(tap_id, food_type) VALUES (".$stmt1->insert_id.", ?)"))){
+		echo "Prepare failed: "  . $stmt3->errno . " " . $stmt3->error;
+	}
+	if(!($stmt3->bind_param("s",$_POST['cuisine']))){
+		echo "Bind failed: "  . $stmt1->errno . " " . $stmt1->error;
+	}
+
+	if(!$stmt3->execute()){
+		echo "Execute failed: "  . $stmt3->errno . " " . $stmt3->error;
+	} else {
+		echo "<h2 style='color:red'>\nAdded " . $stmt3->affected_rows . " row to food.</h2>";
+	} 
+} 
+
 ?> 
 

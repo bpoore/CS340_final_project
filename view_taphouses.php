@@ -105,7 +105,7 @@ if($mysqli->connect_errno){
         </table>
 
         <a href="http://web.engr.oregonstate.edu/~pooree/CS340/final_project/outdoor_seating.php" class="btn btn-info btn-block" role="button">See Taphouses with Outdoor Seating</a>
-        <a href="http://web.engr.oregonstate.edu/~pooree/CS340/final_project/outdoor_seating.php" class="btn btn-info btn-block" role="button">See Taphouses Serving Food</a>
+        <a href="http://web.engr.oregonstate.edu/~pooree/CS340/final_project/serves_food.php" class="btn btn-info btn-block" role="button">See Taphouses Serving Food</a>
 
       <form class="form-horizontal" method='POST' action='add_taphouse.php'>
         <fieldset class="form-group">

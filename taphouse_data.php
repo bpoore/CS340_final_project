@@ -45,6 +45,16 @@ if($mysqli->connect_errno){
       $outdoor = 'no';
     }
 
+    $food_query = getval($mysqli, "SELECT tap_id FROM food WHERE tap_id=".$_POST['taphouse_id']."");
+    if($food_query >0) {
+      $food = 'yes';
+      $cuisine = getval($mysqli, "SELECT food_type FROM food WHERE tap_id=".$_POST['taphouse_id']."");      //Get cuisine name to populate table
+    }
+    else {
+      $food = 'no';
+      $cuisine = "";   //Set cuisine to the empty string 
+    }
+
     function getval($mysqli, $sql) {
         $result = $mysqli->query($sql);
         $value = $result->fetch_array(MYSQLI_NUM);
@@ -167,7 +177,23 @@ if($mysqli->connect_errno){
                   <label><input type='radio' name='outdoor_seating' value='yes' "; if($outdoor=='yes') {echo "checked";} echo">Yes</label>
               </div>
           </div>
+          <div class='form-group row'>
+            <label class='col-sm-2 control-label'>Serves Food:</label>
+              <div class='col-sm-10'>
+                  <label><input type='radio' name='serves_food' value='no' "; if($food=='no') {echo "checked";} echo">No</label>
+                  <label><input type='radio' name='serves_food' value='yes' "; if($food=='yes') {echo "checked";} echo">Yes</label>
+              </div>
+          </div>
+          <div class='form-group row'>
+            <label class='col-sm-2 control-label'>Cuisine Served:</label> 
+                <div class='col-sm-10'>
+                  <label><input type='text' name='cuisine' value ='";
+                  echo $cuisine; 
+                  echo "'>
+                </div>
+          </div>
           <div class='form-group'>
+
             <div class='col-sm-offset-2 col-sm-10'>
               <input type='hidden' name='taphouse_id' value ='";
         echo $id;

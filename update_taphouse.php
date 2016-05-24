@@ -96,7 +96,41 @@ if ($_POST['outdoor_seating'] == "no") {
   if(!$stmt2->execute()){
     echo "Execute failed: "  . $stmt2->errno . " " . $stmt2->error;
   } else {
-    echo "<h2 style='color:red'>\nRemoved " . $stmt2->affected_rows . " rows to outdoor_seating.</h2>";
+    echo "<h2 style='color:red'>\nRemoved " . $stmt2->affected_rows . " row from outdoor_seating.</h2>";
+  } 
+} 
+
+/*Update food info */
+
+$food_was_yes = getval($mysqli, "SELECT tap_id FROM food WHERE tap_id=".$_POST['taphouse_id']."");
+
+if (($_POST['serves_food'] == "yes") && ($_POST['taphouse_id'] != $food_was_yes)) { 
+  if(!($stmt3 = $mysqli->prepare("INSERT INTO food(tap_id, food_type) VALUES (?,?)"))){
+    echo "Prepare failed: "  . $stmt3->errno . " " . $stmt3->error;
+  }
+
+  if(!($stmt3->bind_param("is",$_POST['taphouse_id'],$_POST['cuisine']))){
+  echo "Bind failed: "  . $stmt3->errno . " " . $stmt3->error;
+  }  
+  
+  if(!$stmt3->execute()){
+    echo "Execute failed: "  . $stmt3->errno . " " . $stmt3->error;
+  } else {
+    echo "<h2 style='color:red'>\nAdded " . $stmt3->affected_rows . " rows to food.</h2>";
+  } 
+} //if serves food is yes and wasn't already a place to serve food
+else if (($_POST['serves_food'] != "no") && ($_POST['taphouse_id'] == $food_was_yes)) { 
+  echo "<h2 style='color:red'>\nNo change to rows in food.</h2>";
+}  
+
+if ($_POST['serves_food'] == "no") { 
+  if(!($stmt2 = $mysqli->prepare("DELETE FROM food WHERE tap_id=". $_POST['taphouse_id'] .""))){
+  echo "Prepare failed: "  . $stmt2->errno . " " . $stmt2->error;
+  }
+  if(!$stmt2->execute()){
+    echo "Execute failed: "  . $stmt2->errno . " " . $stmt2->error;
+  } else {
+    echo "<h2 style='color:red'>\nRemoved " . $stmt2->affected_rows . " row from food.</h2>";
   } 
 } 
 

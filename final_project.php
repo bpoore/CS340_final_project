@@ -229,6 +229,66 @@ if($mysqli->connect_errno){
 					</div>
 				</fieldset>
 			</form>	
+			<form class="form-horizontal" method='POST' action='beer_and_food.php'>
+				<fieldset class="form-group">
+					<legend>Find Locations by Food Type and Beer Type:</legend>
+					<div class="form-group">
+						<label class="col-sm-2 control-label">Food:</label>
+							<select class="col-sm-2 control-label" name="food_type">
+								<?php
+									if(!($stmt = $mysqli->prepare("SELECT food.food_type FROM food GROUP BY food.food_type"))){
+										echo "Prepare failed: "  . $stmt->errno . " " . $stmt->error;
+									}
+
+									if(!$stmt->execute()){
+										echo "Execute failed: "  . $mysqli->connect_errno . " " . $mysqli->connect_error;
+									}
+									
+									if(!$stmt->bind_result($type)){
+										echo "Bind failed: "  . $mysqli->connect_errno . " " . $mysqli->connect_error;
+									}
+								
+									while($stmt->fetch()){
+					 			
+					 					echo '<option value="'.$type.'"> ' . $type . '</option>\n';
+									}
+								
+									$stmt->close();
+								?>
+							</select>
+					</div>					
+					<div class="form-group">
+						<label class="col-sm-2 control-label">Beer Type:</label>
+							<select class="col-sm-2 control-label" name="beer_type">
+								<?php
+									if(!($stmt = $mysqli->prepare("SELECT beer.type FROM beer GROUP BY beer.type"))){
+										echo "Prepare failed: "  . $stmt->errno . " " . $stmt->error;
+									}
+
+									if(!$stmt->execute()){
+										echo "Execute failed: "  . $mysqli->connect_errno . " " . $mysqli->connect_error;
+									}
+									
+									if(!$stmt->bind_result($type)){
+										echo "Bind failed: "  . $mysqli->connect_errno . " " . $mysqli->connect_error;
+									}
+								
+									while($stmt->fetch()){
+					 			
+					 					echo '<option value="'.$type.'"> ' . $type . '</option>\n';
+									}
+								
+									$stmt->close();
+								?>
+							</select>
+					</div>
+					<div class="form-group">
+						<div class="col-sm-offset-2 col-sm-10">
+							<input type="submit" class="btn btn-primary">
+						</div>
+					</div>
+				</fieldset>
+			</form>	
 		</div>
 	</body>
 </html>

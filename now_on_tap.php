@@ -121,7 +121,7 @@ if($mysqli->connect_errno){
             <label class="col-sm-2 control-label">Beer:</label>
               <select class="col-sm-2 control-label" name="beer_id">
                 <?php
-                  if(!($stmt = $mysqli->prepare("SELECT beer.id, beer.name FROM beer"))){
+                  if(!($stmt = $mysqli->prepare("SELECT beer.id, brewery.name, beer.name FROM beer INNER JOIN brewery ON beer.brewery=brewery.id"))){
                     echo "Prepare failed: "  . $stmt->errno . " " . $stmt->error;
                   }
 
@@ -129,13 +129,13 @@ if($mysqli->connect_errno){
                     echo "Execute failed: "  . $mysqli->connect_errno . " " . $mysqli->connect_error;
                   }
                   
-                  if(!$stmt->bind_result($id, $name)){
+                  if(!$stmt->bind_result($id, $brewery, $beer)){
                     echo "Bind failed: "  . $mysqli->connect_errno . " " . $mysqli->connect_error;
                   }
                 
                   while($stmt->fetch()){
                 
-                    echo '<option value=" '. $id . ' "> ' . $name . '</option>\n';
+                    echo '<option value=" '. $id . ' "> ' . $brewery . ' - ' . $beer . '</option>\n';
                   }
                 
                   $stmt->close();

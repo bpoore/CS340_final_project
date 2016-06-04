@@ -33,31 +33,31 @@ if($mysqli->connect_errno){
 			        		<li><a href="view_taphouses.php">View and Add Taphouses</a></li> 
 			        		<li><a href="view_beers.php">View and Add Beers</a></li> 
 			        		<li><a href="view_breweries.php">View and Add Breweries</a></li> 
-	    			</div>
 	    		</div>
 			</nav>
+			<?php
+				$tap_id = $_POST['taphouse_id'];
+				if($mysqli->connect_errno){
+					echo "Connection error " . $mysqli->connect_errno . " " . $mysqli->connect_error;
+					}
+
+				if(!($stmt = $mysqli->prepare("INSERT INTO beer_on_tap(tap_id, beer_id, pintPrice, growlerPrice) VALUES (?,?,?,?)"))){
+					echo "Prepare failed: "  . $stmt->errno . " " . $stmt->error;
+				}
+				if(!($stmt->bind_param("iiii",$tap_id,$_POST['beer_id'],$_POST['pintPrice'],$_POST['growlerPrice']))){
+					echo "Bind failed: "  . $stmt->errno . " " . $stmt->error;
+				}
+				if(!$stmt->execute()){
+					echo "Execute failed: "  . $stmt->errno . " " . $stmt->error;
+				} else {
+					echo "<h2 style='color:red'>Added " . $stmt->affected_rows . " row to now_on_tap.</h2>";;
+				}
+			?>
 		</div>
   	</body>
 </html>
 		
 
 
-<?php
-	$tap_id = $_POST['taphouse_id'];
-	if($mysqli->connect_errno){
-		echo "Connection error " . $mysqli->connect_errno . " " . $mysqli->connect_error;
-		}
 
-	if(!($stmt = $mysqli->prepare("INSERT INTO beer_on_tap(tap_id, beer_id, pintPrice, growlerPrice) VALUES (?,?,?,?)"))){
-		echo "Prepare failed: "  . $stmt->errno . " " . $stmt->error;
-	}
-	if(!($stmt->bind_param("iiii",$tap_id,$_POST['beer_id'],$_POST['pintPrice'],$_POST['growlerPrice']))){
-		echo "Bind failed: "  . $stmt->errno . " " . $stmt->error;
-	}
-	if(!$stmt->execute()){
-		echo "Execute failed: "  . $stmt->errno . " " . $stmt->error;
-	} else {
-		echo "<h2 style='color:red'>Added " . $stmt->affected_rows . " row to now_on_tap.</h2>";;
-	}
-?>
 

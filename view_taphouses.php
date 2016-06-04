@@ -116,7 +116,7 @@ if($mysqli->connect_errno){
           <div class="form-group">
             <label class="col-sm-2 control-label">Street Address:</label>
             <div class="col-sm-10">
-              <input type='number' name='street_address'>
+              <input type='text' name='street_address'>
             </div>
           </div>
           <div class='form-group'>

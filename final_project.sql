@@ -1,11 +1,3 @@
-DROP TABLE beer_on_tap;
-DROP TABLE beer;
-DROP table brewery;
-DROP table outdoor_seating;
-DROP TABLE food;
-DROP table taphouse;
-
-
 CREATE TABLE `taphouse` 
 (
 	`id` int NOT NULL AUTO_INCREMENT,

@@ -33,63 +33,63 @@ if($mysqli->connect_errno){
 			        		<li><a href="view_taphouses.php">View and Add Taphouses</a></li> 
 			        		<li><a href="view_beers.php">View and Add Beers</a></li> 
 			        		<li><a href="view_breweries.php">View and Add Breweries</a></li> 
-	    			</div>
 	    		</div>
 			</nav>
+			<?php
+
+				// Found on stack overflow how to deal with time formatting: http://stackoverflow.com/questions/13719116/dealing-with-time-in-php-mysql
+				$open = $_POST['open'] . ':00' . $_POST['open_am_pm'];
+				$otime=strtotime($open);
+				$open_time=date("H:i:s", $otime);
+
+
+				$close = $_POST['close'] . ':00' . $_POST['close_am_pm'];
+				$ctime=strtotime($close);
+				$close_time=date("H:i:s", $ctime);
+
+
+				if(!($stmt1 = $mysqli->prepare("INSERT INTO taphouse(name, street_address, city, state, zip, open, close) VALUES (?,?,?,?,?,?,?)"))){
+					echo "Prepare failed: "  . $stmt1->errno . " " . $stmt1->error;
+				}
+				if(!($stmt1->bind_param("ssssiss",$_POST['name'],$_POST['street_address'],$_POST['city'],$_POST['state'],$_POST['zip'],$open_time,$close_time))){
+					echo "Bind failed: "  . $stmt1->errno . " " . $stmt1->error;
+				}
+				if(!$stmt1->execute()){
+					echo "Execute failed: "  . $stmt1->errno . " " . $stmt1->error;
+				} else {
+					echo "<h2 style='color:red'>Added " . $stmt1->affected_rows . " row to taphouse.</h2>";
+				}
+
+				if ($_POST['outdoor_seating'] == "yes") { 
+					if(!($stmt2 = $mysqli->prepare("INSERT INTO outdoor_seating(tap_id) VALUES (".$stmt1->insert_id.")"))){
+					echo "Prepare failed: "  . $stmt2->errno . " " . $stmt2->error;
+					}
+					if(!$stmt2->execute()){
+						echo "Execute failed: "  . $stmt2->errno . " " . $stmt2->error;
+					} else {
+						echo "<h2 style='color:red'>\nAdded " . $stmt2->affected_rows . " row to outdoor_seating.</h2>";
+					} 
+				} 
+
+				if ($_POST['serves_food'] == "yes") { 
+					if(!($stmt3 = $mysqli->prepare("INSERT INTO food(tap_id, food_type) VALUES (".$stmt1->insert_id.", ?)"))){
+						echo "Prepare failed: "  . $stmt3->errno . " " . $stmt3->error;
+					}
+					if(!($stmt3->bind_param("s",$_POST['cuisine']))){
+						echo "Bind failed: "  . $stmt1->errno . " " . $stmt1->error;
+					}
+
+					if(!$stmt3->execute()){
+						echo "Execute failed: "  . $stmt3->errno . " " . $stmt3->error;
+					} else {
+						echo "<h2 style='color:red'>\nAdded " . $stmt3->affected_rows . " row to food.</h2>";
+					} 
+				} 
+
+			?> 
 		</div>
   	</body>
 </html>
 
-<?php
 
-	// Found on stack overflow how to deal with time formatting: http://stackoverflow.com/questions/13719116/dealing-with-time-in-php-mysql
-	$open = $_POST['open'] . ':00' . $_POST['open_am_pm'];
-	$otime=strtotime($open);
-	$open_time=date("H:i:s", $otime);
-
-
-	$close = $_POST['close'] . ':00' . $_POST['close_am_pm'];
-	$ctime=strtotime($close);
-	$close_time=date("H:i:s", $ctime);
-
-
-	if(!($stmt1 = $mysqli->prepare("INSERT INTO taphouse(name, street_address, city, state, zip, open, close) VALUES (?,?,?,?,?,?,?)"))){
-		echo "Prepare failed: "  . $stmt1->errno . " " . $stmt1->error;
-	}
-	if(!($stmt1->bind_param("ssssiss",$_POST['name'],$_POST['street_address'],$_POST['city'],$_POST['state'],$_POST['zip'],$open_time,$close_time))){
-		echo "Bind failed: "  . $stmt1->errno . " " . $stmt1->error;
-	}
-	if(!$stmt1->execute()){
-		echo "Execute failed: "  . $stmt1->errno . " " . $stmt1->error;
-	} else {
-		echo "<h2 style='color:red'>Added " . $stmt1->affected_rows . " row to taphouse.</h2>";
-	}
-
-	if ($_POST['outdoor_seating'] == "yes") { 
-		if(!($stmt2 = $mysqli->prepare("INSERT INTO outdoor_seating(tap_id) VALUES (".$stmt1->insert_id.")"))){
-		echo "Prepare failed: "  . $stmt2->errno . " " . $stmt2->error;
-		}
-		if(!$stmt2->execute()){
-			echo "Execute failed: "  . $stmt2->errno . " " . $stmt2->error;
-		} else {
-			echo "<h2 style='color:red'>\nAdded " . $stmt2->affected_rows . " row to outdoor_seating.</h2>";
-		} 
-	} 
-
-	if ($_POST['serves_food'] == "yes") { 
-		if(!($stmt3 = $mysqli->prepare("INSERT INTO food(tap_id, food_type) VALUES (".$stmt1->insert_id.", ?)"))){
-			echo "Prepare failed: "  . $stmt3->errno . " " . $stmt3->error;
-		}
-		if(!($stmt3->bind_param("s",$_POST['cuisine']))){
-			echo "Bind failed: "  . $stmt1->errno . " " . $stmt1->error;
-		}
-
-		if(!$stmt3->execute()){
-			echo "Execute failed: "  . $stmt3->errno . " " . $stmt3->error;
-		} else {
-			echo "<h2 style='color:red'>\nAdded " . $stmt3->affected_rows . " row to food.</h2>";
-		} 
-	} 
-
-?> 
 

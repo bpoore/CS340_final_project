@@ -37,7 +37,7 @@ if($mysqli->connect_errno){
 			<div class='jumbotron'>
 				<div class='container'>
 					<h1>Beer Finder</h1>
-					<h3>Find where your favorite beers are at right now!</h3>
+					<h3>Find where the beer you want is on tap</h3>
 					<p>This crowd sourced application shows you what beer is available where in real time. You, the users, add new beers at locations and remove what's not there anymore! This system ensures the most up-to-date data possible amongst all the locations currently serving beer and filling growlers.</p>
 				</div>
 			</div>

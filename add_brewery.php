@@ -33,25 +33,26 @@ if($mysqli->connect_errno){
 			        		<li><a href="view_taphouses.php">View and Add Taphouses</a></li> 
 			        		<li><a href="view_beers.php">View and Add Beers</a></li> 
 			        		<li><a href="view_breweries.php">View and Add Breweries</a></li> 
-	    			</div>
 	    		</div>
 			</nav>
+
+			<?php
+				if(!($stmt = $mysqli->prepare("INSERT INTO brewery(name, city, state) VALUES (?,?,?)"))){
+					echo "Prepare failed: "  . $stmt->errno . " " . $stmt->error;
+				}
+				if(!($stmt->bind_param("sss",$_POST['name'],$_POST['city'],$_POST['state']))){
+					echo "Bind failed: "  . $stmt->errno . " " . $stmt->error;
+				}
+				if(!$stmt->execute()){
+					echo "Execute failed: "  . $stmt->errno . " " . $stmt->error;
+				} else {
+					echo "<h2 style='color:red'>Added " . $stmt->affected_rows . " row to brewery.</h2>";
+				}
+			?>
 		</div>
   	</body>
 </html>
 
 
-<?php
-	if(!($stmt = $mysqli->prepare("INSERT INTO brewery(name, city, state) VALUES (?,?,?)"))){
-		echo "Prepare failed: "  . $stmt->errno . " " . $stmt->error;
-	}
-	if(!($stmt->bind_param("sss",$_POST['name'],$_POST['city'],$_POST['state']))){
-		echo "Bind failed: "  . $stmt->errno . " " . $stmt->error;
-	}
-	if(!$stmt->execute()){
-		echo "Execute failed: "  . $stmt->errno . " " . $stmt->error;
-	} else {
-		echo "<h2 style='color:red'>Added " . $stmt->affected_rows . " row to brewery.</h2>";
-	}
-?>
+
 

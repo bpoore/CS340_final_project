@@ -18,7 +18,8 @@ if($mysqli->connect_errno){
       <link rel="stylesheet" href='style.css'>
       <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
       <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
-      <script src='app.js'></script>
+      <script src='add_brewery.js'></script>
+      <script src='view_breweries.js'></script>
     </head>
     <body>
       <div class="container">
@@ -41,45 +42,9 @@ if($mysqli->connect_errno){
           <th>City</th>
           <th>State</th>
         </tr>
-        <tbody>
-          <?php
-            if(!($stmt = $mysqli->prepare("SELECT brewery.name, brewery.city, brewery.state FROM brewery"))){
-              echo "Prepare failed: "  . $stmt->errno . " " . $stmt->error;
-            }
-
-            if(!$stmt->execute()){
-              echo "Execute failed: "  . $mysqli->connect_errno . " " . $mysqli->connect_error;
-            }
-            
-            if(!$stmt->bind_result($name, $city, $state)){
-              echo "Bind failed: "  . $mysqli->connect_errno . " " . $mysqli->connect_error;
-            }
-          
-            while($stmt->fetch()){
-          
-              echo "<tr>\n<td>\n" . $name . "\n</td>\n<td>\n";
-              if(strlen($city) > 1) {
-                echo $city . "\n</td>\n<td>";
-              }
-              else {
-                $city;
-                echo "N/A\n</td>\n<td>";
-              }
-              if(strlen($state) > 1) {
-                echo $state . "\n</td>\n</tr>";
-              }
-              else {
-                $state;
-                echo "N/A\n</td>\n</tr>";
-              }
-        
-            }
-          
-            $stmt->close();
-          ?>
-        </tbody>
+        <tbody id='brewery_list'></tbody>
       </table>
-      <form class="form-horizontal" method='POST' action='add_brewery.php'>
+      <form class="form-horizontal" method='POST' action='add_brewery.php' id="add_brewery">
         <fieldset class="form-group">
           <legend>Add A Brewery</legend>
           <div class='form-group'>
@@ -102,7 +67,7 @@ if($mysqli->connect_errno){
           </div>
           <div class="form-group">
             <div class="col-sm-offset-2 col-sm-10">
-              <input type="submit" class="btn btn-primary">
+              <button class="btn btn-primary" id="sub">Submit</button>
             </div>
           </div>
         </fieldset>

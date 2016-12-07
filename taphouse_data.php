@@ -36,7 +36,7 @@ if($mysqli->connect_errno){
       </nav>
 
      <?php 
-    //Found info for retrieving a single mysql value from stack overflow. Needed this to avoid error of adding a duplicate tap_id to outdoor seating
+    /*Found info for retrieving a single mysql value from stack overflow. Needed this to avoid error of adding a duplicate tap_id to outdoor seating
     //http://stackoverflow.com/questions/11456707/single-value-mysqli 
     $outdoor_query = getval($mysqli, "SELECT tap_id FROM outdoor_seating WHERE tap_id=".$_POST['taphouse_id']."");
     if($outdoor_query >0) {
@@ -60,7 +60,7 @@ if($mysqli->connect_errno){
         $result = $mysqli->query($sql);
         $value = $result->fetch_array(MYSQLI_NUM);
         return is_array($value) ? $value[0] : "";
-    }
+    } */
 
 		if(!($stmt = $mysqli->prepare("SELECT taphouse.name, taphouse.street_address, taphouse.city, taphouse.state, taphouse.zip, taphouse.open, taphouse.close, taphouse.id FROM taphouse WHERE taphouse.id=".$_POST['taphouse_id'].""))){
 			echo "Prepare failed: "  . $stmt1->errno . " " . $stmt1->error;
@@ -171,30 +171,7 @@ if($mysqli->connect_errno){
                   <label><input type='radio' name='close_am_pm' value='PM' "; if($close_am >= '12') { echo "checked";} echo">PM</label>
                 </div>
           </div>
-          <div class='form-group row'>
-            <label class='col-sm-2 control-label'>Outdoor Seating:</label>
-              <div class='col-sm-10'>
-                  <label><input type='radio' name='outdoor_seating' value='no' "; if($outdoor=='no') {echo "checked";} echo">No</label>
-                  <label><input type='radio' name='outdoor_seating' value='yes' "; if($outdoor=='yes') {echo "checked";} echo">Yes</label>
-              </div>
-          </div>
-          <div class='form-group row'>
-            <label class='col-sm-2 control-label'>Serves Food:</label>
-              <div class='col-sm-10'>
-                  <label><input type='radio' name='serves_food' value='no' "; if($food=='no') {echo "checked";} echo">No</label>
-                  <label><input type='radio' name='serves_food' value='yes' "; if($food=='yes') {echo "checked";} echo">Yes</label>
-              </div>
-          </div>
-          <div class='form-group row'>
-            <label class='col-sm-2 control-label'>Cuisine Served:</label> 
-                <div class='col-sm-10'>
-                  <label><input type='text' name='cuisine' value ='";
-                  echo $cuisine; 
-                  echo "'>
-                </div>
-          </div>
           <div class='form-group'>
-
             <div class='col-sm-offset-2 col-sm-10'>
               <input type='hidden' name='taphouse_id' value ='";
         echo $id;

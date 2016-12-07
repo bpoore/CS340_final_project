@@ -18,7 +18,8 @@ if($mysqli->connect_errno){
       <link rel="stylesheet" href='style.css'>
       <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
       <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
-      <script src='app.js'></script>
+      <script type="text/javascript" src="find_beer.js" ></script>
+      <script async defer src='https://maps.googleapis.com/maps/api/js?key=AIzaSyB4K5LzsA1jeC_8krvameVyNCY9euxuvaU&v=3'></script>
     </head>
     <body>
       <div class="container">
@@ -53,6 +54,7 @@ if($mysqli->connect_errno){
             $stmt->close();
         ?> is now at:
       </h1>
+      <body onload="initMap()">
     	<div class="container">
         <table class="table table-striped">
               <?php

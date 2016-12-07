@@ -18,6 +18,7 @@ if($mysqli->connect_errno){
       <link rel="stylesheet" href='style.css'>
       <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
       <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+      <script src='display_on_tap_by_loc.js'></script>
     </head>
     <body>
       <div class="container">
@@ -53,64 +54,15 @@ if($mysqli->connect_errno){
             $stmt->close();
         ?>
       </h1>
-      <table class="table table-striped" id="on_tap">
-          <?php
-            if(!($stmt = $mysqli->prepare("SELECT brewery.name, beer.name, beer_on_tap.pintPrice, beer_on_tap.growlerPrice, beer_on_tap.id FROM brewery INNER JOIN beer ON brewery.id=beer.brewery INNER JOIN beer_on_tap ON beer.id=beer_on_tap.beer_id INNER JOIN taphouse ON taphouse.id=beer_on_tap.tap_id WHERE taphouse.id=". $_POST['taphouse_id'].""))){
-              echo "Prepare failed: "  . $stmt->errno . " " . $stmt->error;
-            }
-
-            if(!$stmt->execute()){
-              echo "Execute failed: "  . $mysqli->connect_errno . " " . $mysqli->connect_error;
-            }
-            
-            if(!$stmt->bind_result($brewery, $beer, $pint, $growler, $id)){
-              echo "Bind failed: "  . $mysqli->connect_errno . " " . $mysqli->connect_error;
-            }
-
-
-            $stmt->store_result(); //Necessary for num_rows storage
-      
-            if($stmt->num_rows>0) { 
-              echo "<tr>
-                      <th>Brewery</th>
-                      <th>Beer</th>
-                      <th>Pint Price</th>
-                      <th>Grower Price</th>
-                      <th>Remove From Location</th> 
-                    </tr>
-                    <tbody>";  
-              while($stmt->fetch()){
-              
-                  echo "<tr>\n<td>\n" . $brewery . "\n</td>\n<td>\n" . $beer . "\n</td>\n<td>";
-                  if($pint >0) {
-                    echo $pint . "\n</td>\n<td>";
-                  } 
-                  else {
-                    $pint;
-                    echo "N/A\n</td>\n<td>";
-                  }
-                  if($growler>0) {
-                    echo $growler;
-                  }
-                  else {
-                    $growler;
-                    echo "N/A";
-                  }
-                  echo "\n</td>\n<td>\n 
-                  <form method='post' action='delete_beer_at_location.php'>
-                  <input type='hidden' name='beer_on_tap_id' value='". $id . "'>  
-                  <input type='submit' value='Remove' class='btn btn-danger'>
-                  </form>
-                  \n</td>\n</tr>"; 
-              }
-            }
-            else {
-              echo "<h3 style='color:red'>No results</h3>";
-            }
-            
-            $stmt->close();
-          ?>
-        </tbody>
+      <table class="table table-striped">
+          <tr>            
+            <th>Brewery</th>
+            <th>Beer</th>
+            <th>Pint Price</th>
+            <th>Grower Price</th>
+            <th>Remove From Location</th> 
+          </tr>
+          <tbody id="on_tap"></tbody>
       </table>
        <form class="form-horizontal" method='POST' action='add_beer_to_location.php'>
           <fieldset class="form-group">

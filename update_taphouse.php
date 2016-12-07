@@ -66,7 +66,7 @@ if(!$stmt1->execute()){
 
 /* Update outdoor seating table info. 
 Found info for retrieving a single mysql value from stack overflow. Needed this to avoid error of adding a duplicate tap_id to outdoor seating
-http://stackoverflow.com/questions/11456707/single-value-mysqli */
+http://stackoverflow.com/questions/11456707/single-value-mysqli 
 $outdoor_was_yes = getval($mysqli, "SELECT tap_id FROM outdoor_seating WHERE tap_id=".$_POST['taphouse_id']."");
 
 function getval($mysqli, $sql) {
@@ -100,7 +100,7 @@ if ($_POST['outdoor_seating'] == "no") {
   } 
 } 
 
-/*Update food info */
+/*Update food info 
 
 $food_was_yes = getval($mysqli, "SELECT tap_id FROM food WHERE tap_id=".$_POST['taphouse_id']."");
 
@@ -135,5 +135,5 @@ if ($_POST['serves_food'] == "no") {
 } 
 
 
-?>
+?>  */
 

@@ -57,8 +57,9 @@ CREATE TABLE `beer_on_tap`
 	`beer_id` int NOT NULL,
 	`pintPrice` int,
 	`growlerPrice` int,
+	UNIQUE (beer_id),
 	PRIMARY KEY(`id`), 
-	FOREIGN KEY(`tap_id`) REFERENCES `taphouse` (`id`),
-	FOREIGN KEY(`beer_id`) REFERENCES `beer` (`id`)
+	FOREIGN KEY(`tap_id`) REFERENCES `taphouse` (`id`) ON DELETE CASCADE,
+	FOREIGN KEY(`beer_id`) REFERENCES `beer` (`id`) ON DELETE CASCADE
 );
 

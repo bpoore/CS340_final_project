@@ -18,7 +18,8 @@ if($mysqli->connect_errno){
     <link rel="stylesheet" href='style.css'>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
     <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
-    <script src='app.js'></script>
+    <script src='view_beers.js'></script>
+    <script src='add_beer.js'></script>
   </head>
   <body>
   	<div class="container">
@@ -42,51 +43,9 @@ if($mysqli->connect_errno){
 					<th>% Alcohol</th>
 					<th>Brewery</th>
 				</tr>
-				<tbody>
-					<?php
-						if(!($stmt = $mysqli->prepare("SELECT beer.name, beer.type, beer.alc_bv, brewery.name FROM beer INNER JOIN brewery ON beer.brewery=brewery.id"))){
-							echo "Prepare failed: "  . $stmt->errno . " " . $stmt->error;
-						}
-
-						if(!$stmt->execute()){
-							echo "Execute failed: "  . $mysqli->connect_errno . " " . $mysqli->connect_error;
-						}
-						
-						if(!$stmt->bind_result($name, $type, $abv, $brewery)){
-							echo "Bind failed: "  . $mysqli->connect_errno . " " . $mysqli->connect_error;
-						}
-					
-						while($stmt->fetch()){
-						
-								echo "<tr>\n<td>\n" . $name . "\n</td>\n<td>\n";
-								if(strlen($type) >1) {
-									echo  $type . "\n</td>\n<td>";
-								}
-								else {
-									$type;
-									echo "N/A\n</td>\n<td>";
-								}
-								if($abv >0) {
-									echo $abv . "\n</td>\n<td>" ;
-								}
-								else {
-									$abv;
-									echo "N/A\n</td>\n<td>";
-								}
-								if(strlen($brewery )>1) {
-									echo $brewery . "\n</td>\n</tr>";
-								}
-								else {
-									$brewery;
-									echo "N/A\n</td>\n</tr>";
-								}
-						}
-					
-						$stmt->close();
-					?>
-				</tbody>
+				<tbody id='beer_list'></tbody>
 			</table>
-			<form class="form-horizontal" method='POST' action='add_beer.php'>
+			<form class="form-horizontal" method='POST' action="add_beer.php" id='add_beer'>
 				<fieldset class="form-group">
 					<legend>Add A Beer</legend>
 					<div class='form-group'>
@@ -134,7 +93,7 @@ if($mysqli->connect_errno){
 					</div>
 					<div class="form-group">
 						<div class="col-sm-offset-2 col-sm-10">
-							<input type="submit" class="btn btn-primary">
+							<button class="btn btn-primary" id='sub'>Submit</button>
 						</div>
 					</div>
 					<div class='form-group'>
@@ -145,6 +104,7 @@ if($mysqli->connect_errno){
 					</div>
 				</fieldset>
 			</form>	
+			<span id="result"></span>
 		</div>
 	</body>
 </html>	
